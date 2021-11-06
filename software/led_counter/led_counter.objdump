@@ -77,7 +77,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
  29 .jdi          0000644b  00000000  00000000  0006d258  2**0
                   CONTENTS, READONLY
- 30 .sopcinfo     00056d25  00000000  00000000  000736a3  2**0
+ 30 .sopcinfo     00059791  00000000  00000000  000736a3  2**0
                   CONTENTS, READONLY
 SYMBOL TABLE:
 01000000 l    d  .entry	00000000 .entry
@@ -989,9 +989,9 @@ void LCD_Write_Command(int command) {
  1000294:	df000115 	stw	fp,4(sp)
  1000298:	df000104 	addi	fp,sp,4
  100029c:	e13fff15 	stw	r4,-4(fp)
-    IOWR_16DIRECT(LCD_CONTROLLER_0_BASE,0b010*2,command); // Adapt this line
+    IOWR_16DIRECT(DMA_LCD_0_BASE,0b000*4,command); // Adapt this line
  10002a0:	00808034 	movhi	r2,512
- 10002a4:	10841104 	addi	r2,r2,4164
+ 10002a4:	10840004 	addi	r2,r2,4096
  10002a8:	e0ffff0b 	ldhu	r3,-4(fp)
  10002ac:	10c0002d 	sthio	r3,0(r2)
 }
@@ -1008,9 +1008,9 @@ void LCD_Write_Data(int data) {
  10002c8:	df000115 	stw	fp,4(sp)
  10002cc:	df000104 	addi	fp,sp,4
  10002d0:	e13fff15 	stw	r4,-4(fp)
-    IOWR_16DIRECT(LCD_CONTROLLER_0_BASE,0b000*2,data); // Adapt this line
+    IOWR_16DIRECT(DMA_LCD_0_BASE,0b001*4,data); // Adapt this line
  10002d4:	00808034 	movhi	r2,512
- 10002d8:	10841004 	addi	r2,r2,4160
+ 10002d8:	10840104 	addi	r2,r2,4100
  10002dc:	e0ffff0b 	ldhu	r3,-4(fp)
  10002e0:	10c0002d 	sthio	r3,0(r2)
 }
@@ -1028,20 +1028,20 @@ void init_LCD() {
  1000300:	df000015 	stw	fp,0(sp)
  1000304:	d839883a 	mov	fp,sp
 
-  IOWR_8DIRECT(LCD_CONTROLLER_0_BASE,0b011*2,0b000); // set reset on and 16 bits mode
+  IOWR_8DIRECT(DMA_LCD_0_BASE,0b111*4,0b000); // set reset on and 16 bits mode
  1000308:	0007883a 	mov	r3,zero
  100030c:	00808034 	movhi	r2,512
- 1000310:	10841184 	addi	r2,r2,4166
+ 1000310:	10840704 	addi	r2,r2,4124
  1000314:	10c00025 	stbio	r3,0(r2)
   while (counter<100){}   // include delay of at least 120 ms use your timer or a loop
  1000318:	0001883a 	nop
  100031c:	d0a6cb17 	ldw	r2,-25812(gp)
  1000320:	10801910 	cmplti	r2,r2,100
  1000324:	103ffd1e 	bne	r2,zero,100031c <init_LCD+0x24>
-  IOWR_8DIRECT(LCD_CONTROLLER_0_BASE,0b011*2,0b100); // set reset off and 16 bits mode and enable LED_CS
+  IOWR_8DIRECT(DMA_LCD_0_BASE,0b111*4,0b100); // set reset off and 16 bits mode and enable LED_CS
  1000328:	00c00104 	movi	r3,4
  100032c:	00808034 	movhi	r2,512
- 1000330:	10841184 	addi	r2,r2,4166
+ 1000330:	10840704 	addi	r2,r2,4124
  1000334:	10c00025 	stbio	r3,0(r2)
   while (counter<200){}   // include delay of at least 120 ms use your timer or a loop
  1000338:	0001883a 	nop
@@ -1360,7 +1360,7 @@ void timer_interrupt(void *context, alt_u32 id){
 	IOWR_16DIRECT(TIMER_0_BASE,0,0); //Reset the flag interrupt
  1000658:	0007883a 	mov	r3,zero
  100065c:	00808034 	movhi	r2,512
- 1000660:	10840004 	addi	r2,r2,4096
+ 1000660:	10840804 	addi	r2,r2,4128
  1000664:	10c0002d 	sthio	r3,0(r2)
 }
  1000668:	0001883a 	nop
@@ -1535,12 +1535,12 @@ int main(){
 	IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b000*4, 0xFFFFFFFF); //Set to outputs
  1000854:	00ffffc4 	movi	r3,-1
  1000858:	00808034 	movhi	r2,512
- 100085c:	10840804 	addi	r2,r2,4128
+ 100085c:	10841004 	addi	r2,r2,4160
  1000860:	10c00035 	stwio	r3,0(r2)
 	IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010*4, 0xFFFFFFFF); //Set all to 1
  1000864:	00ffffc4 	movi	r3,-1
  1000868:	00808034 	movhi	r2,512
- 100086c:	10840a04 	addi	r2,r2,4136
+ 100086c:	10841204 	addi	r2,r2,4168
  1000870:	10c00035 	stwio	r3,0(r2)
 
 	alt_irq_register(TIMER_0_IRQ,(void*)2,(alt_isr_func)timer_interrupt);
@@ -1553,7 +1553,7 @@ int main(){
 	IOWR_16DIRECT(TIMER_0_BASE,4,0b111); // enbale timer 0
  1000888:	00c001c4 	movi	r3,7
  100088c:	00808034 	movhi	r2,512
- 1000890:	10840104 	addi	r2,r2,4100
+ 1000890:	10840904 	addi	r2,r2,4132
  1000894:	10c0002d 	sthio	r3,0(r2)
 
 	init_LCD();
@@ -1577,13 +1577,10 @@ int main(){
 		IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010*4, counter);// write counter value on the parallel port;
  10008c0:	d0e6cb17 	ldw	r3,-25812(gp)
  10008c4:	00808034 	movhi	r2,512
- 10008c8:	10840a04 	addi	r2,r2,4136
+ 10008c8:	10841204 	addi	r2,r2,4168
  10008cc:	10c00035 	stwio	r3,0(r2)
 		//counter++;
 		//printf("counter = %d \n", counter);
-		//IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010*4, counter);
-		//IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010, 0x0C0D0E0F);
-		//IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010*4, 0xFFFFFFFF);
 	}
  10008d0:	003ff506 	br	10008a8 <main+0x70>
 

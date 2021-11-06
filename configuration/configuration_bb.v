@@ -1,13 +1,14 @@
 
 module configuration (
 	clk_clk,
-	lcd_controller_0_c_d_export,
-	lcd_controller_0_cs_export,
-	lcd_controller_0_data_export,
-	lcd_controller_0_im0_export,
-	lcd_controller_0_rd_export,
-	lcd_controller_0_res_export,
-	lcd_controller_0_wr_export,
+	dma_lcd_0_cs_n_export,
+	dma_lcd_0_d_c_n_export,
+	dma_lcd_0_data_export,
+	dma_lcd_0_end_of_transaction_irq_export,
+	dma_lcd_0_im0_export,
+	dma_lcd_0_rd_export,
+	dma_lcd_0_res_export,
+	dma_lcd_0_wr_n_export,
 	led_port_export,
 	leds_external_connection_export,
 	reset_reset_n,
@@ -23,13 +24,14 @@ module configuration (
 	sram_clk_clk);	
 
 	input		clk_clk;
-	output		lcd_controller_0_c_d_export;
-	output		lcd_controller_0_cs_export;
-	output	[15:0]	lcd_controller_0_data_export;
-	output		lcd_controller_0_im0_export;
-	output		lcd_controller_0_rd_export;
-	output		lcd_controller_0_res_export;
-	output		lcd_controller_0_wr_export;
+	output		dma_lcd_0_cs_n_export;
+	output		dma_lcd_0_d_c_n_export;
+	output	[15:0]	dma_lcd_0_data_export;
+	output		dma_lcd_0_end_of_transaction_irq_export;
+	output		dma_lcd_0_im0_export;
+	output		dma_lcd_0_rd_export;
+	output		dma_lcd_0_res_export;
+	output		dma_lcd_0_wr_n_export;
 	inout	[31:0]	led_port_export;
 	output	[7:0]	leds_external_connection_export;
 	input		reset_reset_n;

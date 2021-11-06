@@ -4,7 +4,7 @@
  * Machine generated for CPU 'cpu' in SOPC Builder design 'configuration'
  * SOPC Builder design path: ../../configuration.sopcinfo
  *
- * Generated: Sat Nov 06 10:39:32 CET 2021
+ * Generated: Sat Nov 06 18:17:14 CET 2021
  */
 
 /*
@@ -137,6 +137,20 @@
 
 
 /*
+ * DMA_LCD_0 configuration
+ *
+ */
+
+#define ALT_MODULE_CLASS_DMA_LCD_0 DMA_LCD
+#define DMA_LCD_0_BASE 0x2001000
+#define DMA_LCD_0_IRQ -1
+#define DMA_LCD_0_IRQ_INTERRUPT_CONTROLLER_ID -1
+#define DMA_LCD_0_NAME "/dev/DMA_LCD_0"
+#define DMA_LCD_0_SPAN 32
+#define DMA_LCD_0_TYPE "DMA_LCD"
+
+
+/*
  * Define for each module class mastered by the CPU
  *
  */
@@ -148,8 +162,8 @@
 #define __ALTERA_AVALON_TIMER
 #define __ALTERA_NIOS2_GEN2
 #define __ALTPLL
+#define __DMA_LCD
 #define __GPIO_PARALLEL_PORT
-#define __LCD_CONTROLLER
 
 
 /*
@@ -158,7 +172,7 @@
  */
 
 #define ALT_MODULE_CLASS_GPIO_parallel_port_0 GPIO_parallel_port
-#define GPIO_PARALLEL_PORT_0_BASE 0x2001020
+#define GPIO_PARALLEL_PORT_0_BASE 0x2001040
 #define GPIO_PARALLEL_PORT_0_IRQ -1
 #define GPIO_PARALLEL_PORT_0_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define GPIO_PARALLEL_PORT_0_NAME "/dev/GPIO_parallel_port_0"
@@ -167,26 +181,12 @@
 
 
 /*
- * LCD_controller_0 configuration
- *
- */
-
-#define ALT_MODULE_CLASS_LCD_controller_0 LCD_controller
-#define LCD_CONTROLLER_0_BASE 0x2001040
-#define LCD_CONTROLLER_0_IRQ -1
-#define LCD_CONTROLLER_0_IRQ_INTERRUPT_CONTROLLER_ID -1
-#define LCD_CONTROLLER_0_NAME "/dev/LCD_controller_0"
-#define LCD_CONTROLLER_0_SPAN 16
-#define LCD_CONTROLLER_0_TYPE "LCD_controller"
-
-
-/*
  * LEDs configuration
  *
  */
 
 #define ALT_MODULE_CLASS_LEDs altera_avalon_pio
-#define LEDS_BASE 0x2001050
+#define LEDS_BASE 0x2001060
 #define LEDS_BIT_CLEARING_EDGE_REGISTER 0
 #define LEDS_BIT_MODIFYING_OUTPUT_REGISTER 0
 #define LEDS_CAPTURE 0
@@ -262,19 +262,19 @@
 #define ALT_NUM_INTERNAL_INTERRUPT_CONTROLLERS 1
 #define ALT_NUM_INTERRUPT_CONTROLLERS 1
 #define ALT_STDERR "/dev/jtag_uart"
-#define ALT_STDERR_BASE 0x2001078
+#define ALT_STDERR_BASE 0x2001088
 #define ALT_STDERR_DEV jtag_uart
 #define ALT_STDERR_IS_JTAG_UART
 #define ALT_STDERR_PRESENT
 #define ALT_STDERR_TYPE "altera_avalon_jtag_uart"
 #define ALT_STDIN "/dev/jtag_uart"
-#define ALT_STDIN_BASE 0x2001078
+#define ALT_STDIN_BASE 0x2001088
 #define ALT_STDIN_DEV jtag_uart
 #define ALT_STDIN_IS_JTAG_UART
 #define ALT_STDIN_PRESENT
 #define ALT_STDIN_TYPE "altera_avalon_jtag_uart"
 #define ALT_STDOUT "/dev/jtag_uart"
-#define ALT_STDOUT_BASE 0x2001078
+#define ALT_STDOUT_BASE 0x2001088
 #define ALT_STDOUT_DEV jtag_uart
 #define ALT_STDOUT_IS_JTAG_UART
 #define ALT_STDOUT_PRESENT
@@ -287,7 +287,7 @@
  *
  */
 
-#define ALTPLL_0_BASE 0x2001060
+#define ALTPLL_0_BASE 0x2001070
 #define ALTPLL_0_IRQ -1
 #define ALTPLL_0_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define ALTPLL_0_NAME "/dev/altpll_0"
@@ -313,7 +313,7 @@
  */
 
 #define ALT_MODULE_CLASS_jtag_uart altera_avalon_jtag_uart
-#define JTAG_UART_BASE 0x2001078
+#define JTAG_UART_BASE 0x2001088
 #define JTAG_UART_IRQ 0
 #define JTAG_UART_IRQ_INTERRUPT_CONTROLLER_ID 0
 #define JTAG_UART_NAME "/dev/jtag_uart"
@@ -331,13 +331,13 @@
  */
 
 #define ALT_MODULE_CLASS_sysid_qsys_0 altera_avalon_sysid_qsys
-#define SYSID_QSYS_0_BASE 0x2001070
+#define SYSID_QSYS_0_BASE 0x2001080
 #define SYSID_QSYS_0_ID 0
 #define SYSID_QSYS_0_IRQ -1
 #define SYSID_QSYS_0_IRQ_INTERRUPT_CONTROLLER_ID -1
 #define SYSID_QSYS_0_NAME "/dev/sysid_qsys_0"
 #define SYSID_QSYS_0_SPAN 8
-#define SYSID_QSYS_0_TIMESTAMP 1636191391
+#define SYSID_QSYS_0_TIMESTAMP 1636218888
 #define SYSID_QSYS_0_TYPE "altera_avalon_sysid_qsys"
 
 
@@ -348,7 +348,7 @@
 
 #define ALT_MODULE_CLASS_timer_0 altera_avalon_timer
 #define TIMER_0_ALWAYS_RUN 0
-#define TIMER_0_BASE 0x2001000
+#define TIMER_0_BASE 0x2001020
 #define TIMER_0_COUNTER_SIZE 32
 #define TIMER_0_FIXED_PERIOD 1
 #define TIMER_0_FREQ 50000000

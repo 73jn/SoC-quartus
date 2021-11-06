@@ -18,18 +18,18 @@ int greenPicture[240*320];
 int bluePicture[240*320];
 
 void LCD_Write_Command(int command) {
-    IOWR_16DIRECT(LCD_CONTROLLER_0_BASE,0b010*2,command); // Adapt this line
+    IOWR_16DIRECT(DMA_LCD_0_BASE,0b000*4,command); // Adapt this line
 }
 
 void LCD_Write_Data(int data) {
-    IOWR_16DIRECT(LCD_CONTROLLER_0_BASE,0b000*2,data); // Adapt this line
+    IOWR_16DIRECT(DMA_LCD_0_BASE,0b001*4,data); // Adapt this line
 }
 
 void init_LCD() {
 
-  IOWR_8DIRECT(LCD_CONTROLLER_0_BASE,0b011*2,0b000); // set reset on and 16 bits mode
+  IOWR_8DIRECT(DMA_LCD_0_BASE,0b111*4,0b000); // set reset on and 16 bits mode
   while (counter<100){}   // include delay of at least 120 ms use your timer or a loop
-  IOWR_8DIRECT(LCD_CONTROLLER_0_BASE,0b011*2,0b100); // set reset off and 16 bits mode and enable LED_CS
+  IOWR_8DIRECT(DMA_LCD_0_BASE,0b111*4,0b100); // set reset off and 16 bits mode and enable LED_CS
   while (counter<200){}   // include delay of at least 120 ms use your timer or a loop
 
   LCD_Write_Command(0x0028);     //display OFF
@@ -173,8 +173,5 @@ int main(){
 		IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010*4, counter);// write counter value on the parallel port;
 		//counter++;
 		//printf("counter = %d \n", counter);
-		//IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010*4, counter);
-		//IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010, 0x0C0D0E0F);
-		//IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010*4, 0xFFFFFFFF);
 	}
 }

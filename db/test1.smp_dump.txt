@@ -34,7 +34,7 @@ i_state.011 0 0 1 0 0 1
 i_state.101 0 1 0 0 0 1 
 i_state.111 1 0 0 0 0 1 
 
-State Machine - |test1|configuration:inst|LCDPort:lcd_controller_0|mainState
+State Machine - |test1|configuration:inst|DMA_LCD_ctrl:dma_lcd_0|mainState
 Name mainState.STATE2 mainState.STATE1 mainState.IDLE 
 mainState.IDLE 0 0 0 
 mainState.STATE1 0 1 1 

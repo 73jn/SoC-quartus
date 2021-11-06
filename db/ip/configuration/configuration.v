@@ -4,30 +4,35 @@
 
 `timescale 1 ps / 1 ps
 module configuration (
-		input  wire        clk_clk,                         //                      clk.clk
-		output wire        lcd_controller_0_c_d_export,     //     lcd_controller_0_c_d.export
-		output wire        lcd_controller_0_cs_export,      //      lcd_controller_0_cs.export
-		output wire [15:0] lcd_controller_0_data_export,    //    lcd_controller_0_data.export
-		output wire        lcd_controller_0_im0_export,     //     lcd_controller_0_im0.export
-		output wire        lcd_controller_0_rd_export,      //      lcd_controller_0_rd.export
-		output wire        lcd_controller_0_res_export,     //     lcd_controller_0_res.export
-		output wire        lcd_controller_0_wr_export,      //      lcd_controller_0_wr.export
-		inout  wire [31:0] led_port_export,                 //                 led_port.export
-		output wire [7:0]  leds_external_connection_export, // leds_external_connection.export
-		input  wire        reset_reset_n,                   //                    reset.reset_n
-		output wire [11:0] sdram_ctrl_wire_addr,            //          sdram_ctrl_wire.addr
-		output wire [1:0]  sdram_ctrl_wire_ba,              //                         .ba
-		output wire        sdram_ctrl_wire_cas_n,           //                         .cas_n
-		output wire        sdram_ctrl_wire_cke,             //                         .cke
-		output wire        sdram_ctrl_wire_cs_n,            //                         .cs_n
-		inout  wire [15:0] sdram_ctrl_wire_dq,              //                         .dq
-		output wire [1:0]  sdram_ctrl_wire_dqm,             //                         .dqm
-		output wire        sdram_ctrl_wire_ras_n,           //                         .ras_n
-		output wire        sdram_ctrl_wire_we_n,            //                         .we_n
-		output wire        sram_clk_clk                     //                 sram_clk.clk
+		input  wire        clk_clk,                                 //                              clk.clk
+		output wire        dma_lcd_0_cs_n_export,                   //                   dma_lcd_0_cs_n.export
+		output wire        dma_lcd_0_d_c_n_export,                  //                  dma_lcd_0_d_c_n.export
+		output wire [15:0] dma_lcd_0_data_export,                   //                   dma_lcd_0_data.export
+		output wire        dma_lcd_0_end_of_transaction_irq_export, // dma_lcd_0_end_of_transaction_irq.export
+		output wire        dma_lcd_0_im0_export,                    //                    dma_lcd_0_im0.export
+		output wire        dma_lcd_0_rd_export,                     //                     dma_lcd_0_rd.export
+		output wire        dma_lcd_0_res_export,                    //                    dma_lcd_0_res.export
+		output wire        dma_lcd_0_wr_n_export,                   //                   dma_lcd_0_wr_n.export
+		inout  wire [31:0] led_port_export,                         //                         led_port.export
+		output wire [7:0]  leds_external_connection_export,         //         leds_external_connection.export
+		input  wire        reset_reset_n,                           //                            reset.reset_n
+		output wire [11:0] sdram_ctrl_wire_addr,                    //                  sdram_ctrl_wire.addr
+		output wire [1:0]  sdram_ctrl_wire_ba,                      //                                 .ba
+		output wire        sdram_ctrl_wire_cas_n,                   //                                 .cas_n
+		output wire        sdram_ctrl_wire_cke,                     //                                 .cke
+		output wire        sdram_ctrl_wire_cs_n,                    //                                 .cs_n
+		inout  wire [15:0] sdram_ctrl_wire_dq,                      //                                 .dq
+		output wire [1:0]  sdram_ctrl_wire_dqm,                     //                                 .dqm
+		output wire        sdram_ctrl_wire_ras_n,                   //                                 .ras_n
+		output wire        sdram_ctrl_wire_we_n,                    //                                 .we_n
+		output wire        sram_clk_clk                             //                         sram_clk.clk
 	);
 
-	wire         altpll_0_c0_clk;                                                  // altpll_0:c0 -> [GPIO_parallel_port_0:signalsClk, LCD_controller_0:signalsClk, LEDs:clk, SDRAM_controller:clk, cpu:clk, irq_mapper:clk, jtag_uart:clk, mm_interconnect_0:altpll_0_c0_clk, rst_controller:clk, sysid_qsys_0:clock, timer_0:clk]
+	wire         altpll_0_c0_clk;                                                  // altpll_0:c0 -> [DMA_LCD_0:signalsClk, GPIO_parallel_port_0:signalsClk, LEDs:clk, SDRAM_controller:clk, cpu:clk, irq_mapper:clk, jtag_uart:clk, mm_interconnect_0:altpll_0_c0_clk, rst_controller:clk, sysid_qsys_0:clock, timer_0:clk]
+	wire  [15:0] dma_lcd_0_avalon_master_readdata;                                 // mm_interconnect_0:DMA_LCD_0_avalon_master_readdata -> DMA_LCD_0:master_readdata
+	wire         dma_lcd_0_avalon_master_waitrequest;                              // mm_interconnect_0:DMA_LCD_0_avalon_master_waitrequest -> DMA_LCD_0:master_waitrequest
+	wire  [31:0] dma_lcd_0_avalon_master_address;                                  // DMA_LCD_0:master_address -> mm_interconnect_0:DMA_LCD_0_avalon_master_address
+	wire         dma_lcd_0_avalon_master_read;                                     // DMA_LCD_0:master_read -> mm_interconnect_0:DMA_LCD_0_avalon_master_read
 	wire  [31:0] cpu_data_master_readdata;                                         // mm_interconnect_0:cpu_data_master_readdata -> cpu:d_readdata
 	wire         cpu_data_master_waitrequest;                                      // mm_interconnect_0:cpu_data_master_waitrequest -> cpu:d_waitrequest
 	wire         cpu_data_master_debugaccess;                                      // cpu:debug_mem_slave_debugaccess_to_roms -> mm_interconnect_0:cpu_data_master_debugaccess
@@ -42,6 +47,13 @@ module configuration (
 	wire  [25:0] cpu_instruction_master_address;                                   // cpu:i_address -> mm_interconnect_0:cpu_instruction_master_address
 	wire         cpu_instruction_master_read;                                      // cpu:i_read -> mm_interconnect_0:cpu_instruction_master_read
 	wire         cpu_instruction_master_readdatavalid;                             // mm_interconnect_0:cpu_instruction_master_readdatavalid -> cpu:i_readdatavalid
+	wire         mm_interconnect_0_dma_lcd_0_avalon_chipselect;                    // mm_interconnect_0:DMA_LCD_0_avalon_chipselect -> DMA_LCD_0:avalon_cs
+	wire  [31:0] mm_interconnect_0_dma_lcd_0_avalon_readdata;                      // DMA_LCD_0:avalon_read_data -> mm_interconnect_0:DMA_LCD_0_avalon_readdata
+	wire         mm_interconnect_0_dma_lcd_0_avalon_waitrequest;                   // DMA_LCD_0:avalon_waitrequest -> mm_interconnect_0:DMA_LCD_0_avalon_waitrequest
+	wire   [2:0] mm_interconnect_0_dma_lcd_0_avalon_address;                       // mm_interconnect_0:DMA_LCD_0_avalon_address -> DMA_LCD_0:avalon_address
+	wire         mm_interconnect_0_dma_lcd_0_avalon_read;                          // mm_interconnect_0:DMA_LCD_0_avalon_read -> DMA_LCD_0:avalon_rd
+	wire         mm_interconnect_0_dma_lcd_0_avalon_write;                         // mm_interconnect_0:DMA_LCD_0_avalon_write -> DMA_LCD_0:avalon_wr
+	wire  [31:0] mm_interconnect_0_dma_lcd_0_avalon_writedata;                     // mm_interconnect_0:DMA_LCD_0_avalon_writedata -> DMA_LCD_0:avalon_write_data
 	wire         mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect;         // mm_interconnect_0:jtag_uart_avalon_jtag_slave_chipselect -> jtag_uart:av_chipselect
 	wire  [31:0] mm_interconnect_0_jtag_uart_avalon_jtag_slave_readdata;           // jtag_uart:av_readdata -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_readdata
 	wire         mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest;        // jtag_uart:av_waitrequest -> mm_interconnect_0:jtag_uart_avalon_jtag_slave_waitrequest
@@ -55,11 +67,6 @@ module configuration (
 	wire         mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_read;       // mm_interconnect_0:GPIO_parallel_port_0_avalon_slave_0_read -> GPIO_parallel_port_0:Read
 	wire         mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_write;      // mm_interconnect_0:GPIO_parallel_port_0_avalon_slave_0_write -> GPIO_parallel_port_0:Write
 	wire  [31:0] mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_writedata;  // mm_interconnect_0:GPIO_parallel_port_0_avalon_slave_0_writedata -> GPIO_parallel_port_0:WriteData
-	wire         mm_interconnect_0_lcd_controller_0_avalon_slave_0_chipselect;     // mm_interconnect_0:LCD_controller_0_avalon_slave_0_chipselect -> LCD_controller_0:ChipSelect
-	wire         mm_interconnect_0_lcd_controller_0_avalon_slave_0_waitrequest;    // LCD_controller_0:wait_request -> mm_interconnect_0:LCD_controller_0_avalon_slave_0_waitrequest
-	wire   [2:0] mm_interconnect_0_lcd_controller_0_avalon_slave_0_address;        // mm_interconnect_0:LCD_controller_0_avalon_slave_0_address -> LCD_controller_0:Address
-	wire         mm_interconnect_0_lcd_controller_0_avalon_slave_0_write;          // mm_interconnect_0:LCD_controller_0_avalon_slave_0_write -> LCD_controller_0:Write
-	wire  [15:0] mm_interconnect_0_lcd_controller_0_avalon_slave_0_writedata;      // mm_interconnect_0:LCD_controller_0_avalon_slave_0_writedata -> LCD_controller_0:WriteData
 	wire  [31:0] mm_interconnect_0_sysid_qsys_0_control_slave_readdata;            // sysid_qsys_0:readdata -> mm_interconnect_0:sysid_qsys_0_control_slave_readdata
 	wire   [0:0] mm_interconnect_0_sysid_qsys_0_control_slave_address;             // mm_interconnect_0:sysid_qsys_0_control_slave_address -> sysid_qsys_0:address
 	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_readdata;                   // cpu:debug_mem_slave_readdata -> mm_interconnect_0:cpu_debug_mem_slave_readdata
@@ -97,10 +104,34 @@ module configuration (
 	wire         irq_mapper_receiver0_irq;                                         // jtag_uart:av_irq -> irq_mapper:receiver0_irq
 	wire         irq_mapper_receiver1_irq;                                         // timer_0:irq -> irq_mapper:receiver1_irq
 	wire  [31:0] cpu_irq_irq;                                                      // irq_mapper:sender_irq -> cpu:irq
-	wire         rst_controller_reset_out_reset;                                   // rst_controller:reset_out -> [GPIO_parallel_port_0:nReset, LCD_controller_0:nReset, LEDs:reset_n, SDRAM_controller:reset_n, cpu:reset_n, irq_mapper:reset, jtag_uart:rst_n, mm_interconnect_0:cpu_reset_reset_bridge_in_reset_reset, rst_translator:in_reset, sysid_qsys_0:reset_n, timer_0:reset_n]
+	wire         rst_controller_reset_out_reset;                                   // rst_controller:reset_out -> [DMA_LCD_0:nReset, GPIO_parallel_port_0:nReset, LEDs:reset_n, SDRAM_controller:reset_n, cpu:reset_n, irq_mapper:reset, jtag_uart:rst_n, mm_interconnect_0:DMA_LCD_0_reset_sink_reset_bridge_in_reset_reset, rst_translator:in_reset, sysid_qsys_0:reset_n, timer_0:reset_n]
 	wire         rst_controller_reset_out_reset_req;                               // rst_controller:reset_req -> [cpu:reset_req, rst_translator:reset_req_in]
 	wire         cpu_debug_reset_request_reset;                                    // cpu:debug_reset_request -> [rst_controller:reset_in1, rst_controller_001:reset_in1]
 	wire         rst_controller_001_reset_out_reset;                               // rst_controller_001:reset_out -> [altpll_0:reset, mm_interconnect_0:altpll_0_inclk_interface_reset_reset_bridge_in_reset_reset]
+
+	DMA_LCD_ctrl dma_lcd_0 (
+		.avalon_address         (mm_interconnect_0_dma_lcd_0_avalon_address),     //                         avalon.address
+		.avalon_waitrequest     (mm_interconnect_0_dma_lcd_0_avalon_waitrequest), //                               .waitrequest
+		.avalon_cs              (mm_interconnect_0_dma_lcd_0_avalon_chipselect),  //                               .chipselect
+		.avalon_rd              (mm_interconnect_0_dma_lcd_0_avalon_read),        //                               .read
+		.avalon_read_data       (mm_interconnect_0_dma_lcd_0_avalon_readdata),    //                               .readdata
+		.avalon_wr              (mm_interconnect_0_dma_lcd_0_avalon_write),       //                               .write
+		.avalon_write_data      (mm_interconnect_0_dma_lcd_0_avalon_writedata),   //                               .writedata
+		.master_address         (dma_lcd_0_avalon_master_address),                //                  avalon_master.address
+		.master_readdata        (dma_lcd_0_avalon_master_readdata),               //                               .readdata
+		.master_read            (dma_lcd_0_avalon_master_read),                   //                               .read
+		.master_waitrequest     (dma_lcd_0_avalon_master_waitrequest),            //                               .waitrequest
+		.nReset                 (~rst_controller_reset_out_reset),                //                     reset_sink.reset_n
+		.LCD_CS_n               (dma_lcd_0_cs_n_export),                          //                   conduit_CS_n.export
+		.LCD_D_C_n              (dma_lcd_0_d_c_n_export),                         //                  conduit_D_C_n.export
+		.LCD_IM0                (dma_lcd_0_im0_export),                           //                    conduit_IM0.export
+		.LCD_RD                 (dma_lcd_0_rd_export),                            //                     conduit_RD.export
+		.LCD_WR_n               (dma_lcd_0_wr_n_export),                          //                   conduit_WR_n.export
+		.LCD_RES                (dma_lcd_0_res_export),                           //                    conduit_RES.export
+		.LCD_data               (dma_lcd_0_data_export),                          //                   conduit_data.export
+		.end_of_transaction_irq (dma_lcd_0_end_of_transaction_irq_export),        // conduit_end_of_transaction_irq.export
+		.signalsClk             (altpll_0_c0_clk)                                 //                            clk.clk
+	);
 
 	ParallelPort gpio_parallel_port_0 (
 		.Address          (mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_address),    // avalon_slave_0.address
@@ -112,23 +143,6 @@ module configuration (
 		.signalsClk       (altpll_0_c0_clk),                                                  //          clock.clk
 		.interfaceParPort (led_port_export),                                                  //    conduit_end.export
 		.nReset           (~rst_controller_reset_out_reset)                                   //     reset_sink.reset_n
-	);
-
-	LCDPort lcd_controller_0 (
-		.Address      (mm_interconnect_0_lcd_controller_0_avalon_slave_0_address),     // avalon_slave_0.address
-		.ChipSelect   (mm_interconnect_0_lcd_controller_0_avalon_slave_0_chipselect),  //               .chipselect
-		.Write        (mm_interconnect_0_lcd_controller_0_avalon_slave_0_write),       //               .write
-		.WriteData    (mm_interconnect_0_lcd_controller_0_avalon_slave_0_writedata),   //               .writedata
-		.wait_request (mm_interconnect_0_lcd_controller_0_avalon_slave_0_waitrequest), //               .waitrequest
-		.signalsClk   (altpll_0_c0_clk),                                               //     clock_sink.clk
-		.nReset       (~rst_controller_reset_out_reset),                               //     reset_sink.reset_n
-		.LCD_CS       (lcd_controller_0_cs_export),                                    //             CS.export
-		.LCD_C_D      (lcd_controller_0_c_d_export),                                   //            C_D.export
-		.LCD_DATA     (lcd_controller_0_data_export),                                  //           DATA.export
-		.LCD_IM0      (lcd_controller_0_im0_export),                                   //            IM0.export
-		.LCD_RD       (lcd_controller_0_rd_export),                                    //             RD.export
-		.LCD_RES      (lcd_controller_0_res_export),                                   //            RES.export
-		.LCD_WR       (lcd_controller_0_wr_export)                                     //             WR.export
 	);
 
 	configuration_LEDs leds (
@@ -255,7 +269,7 @@ module configuration (
 		.altpll_0_c0_clk                                            (altpll_0_c0_clk),                                                  //                                          altpll_0_c0.clk
 		.clk_0_clk_clk                                              (clk_clk),                                                          //                                            clk_0_clk.clk
 		.altpll_0_inclk_interface_reset_reset_bridge_in_reset_reset (rst_controller_001_reset_out_reset),                               // altpll_0_inclk_interface_reset_reset_bridge_in_reset.reset
-		.cpu_reset_reset_bridge_in_reset_reset                      (rst_controller_reset_out_reset),                                   //                      cpu_reset_reset_bridge_in_reset.reset
+		.DMA_LCD_0_reset_sink_reset_bridge_in_reset_reset           (rst_controller_reset_out_reset),                                   //           DMA_LCD_0_reset_sink_reset_bridge_in_reset.reset
 		.cpu_data_master_address                                    (cpu_data_master_address),                                          //                                      cpu_data_master.address
 		.cpu_data_master_waitrequest                                (cpu_data_master_waitrequest),                                      //                                                     .waitrequest
 		.cpu_data_master_byteenable                                 (cpu_data_master_byteenable),                                       //                                                     .byteenable
@@ -270,6 +284,10 @@ module configuration (
 		.cpu_instruction_master_read                                (cpu_instruction_master_read),                                      //                                                     .read
 		.cpu_instruction_master_readdata                            (cpu_instruction_master_readdata),                                  //                                                     .readdata
 		.cpu_instruction_master_readdatavalid                       (cpu_instruction_master_readdatavalid),                             //                                                     .readdatavalid
+		.DMA_LCD_0_avalon_master_address                            (dma_lcd_0_avalon_master_address),                                  //                              DMA_LCD_0_avalon_master.address
+		.DMA_LCD_0_avalon_master_waitrequest                        (dma_lcd_0_avalon_master_waitrequest),                              //                                                     .waitrequest
+		.DMA_LCD_0_avalon_master_read                               (dma_lcd_0_avalon_master_read),                                     //                                                     .read
+		.DMA_LCD_0_avalon_master_readdata                           (dma_lcd_0_avalon_master_readdata),                                 //                                                     .readdata
 		.altpll_0_pll_slave_address                                 (mm_interconnect_0_altpll_0_pll_slave_address),                     //                                   altpll_0_pll_slave.address
 		.altpll_0_pll_slave_write                                   (mm_interconnect_0_altpll_0_pll_slave_write),                       //                                                     .write
 		.altpll_0_pll_slave_read                                    (mm_interconnect_0_altpll_0_pll_slave_read),                        //                                                     .read
@@ -283,6 +301,13 @@ module configuration (
 		.cpu_debug_mem_slave_byteenable                             (mm_interconnect_0_cpu_debug_mem_slave_byteenable),                 //                                                     .byteenable
 		.cpu_debug_mem_slave_waitrequest                            (mm_interconnect_0_cpu_debug_mem_slave_waitrequest),                //                                                     .waitrequest
 		.cpu_debug_mem_slave_debugaccess                            (mm_interconnect_0_cpu_debug_mem_slave_debugaccess),                //                                                     .debugaccess
+		.DMA_LCD_0_avalon_address                                   (mm_interconnect_0_dma_lcd_0_avalon_address),                       //                                     DMA_LCD_0_avalon.address
+		.DMA_LCD_0_avalon_write                                     (mm_interconnect_0_dma_lcd_0_avalon_write),                         //                                                     .write
+		.DMA_LCD_0_avalon_read                                      (mm_interconnect_0_dma_lcd_0_avalon_read),                          //                                                     .read
+		.DMA_LCD_0_avalon_readdata                                  (mm_interconnect_0_dma_lcd_0_avalon_readdata),                      //                                                     .readdata
+		.DMA_LCD_0_avalon_writedata                                 (mm_interconnect_0_dma_lcd_0_avalon_writedata),                     //                                                     .writedata
+		.DMA_LCD_0_avalon_waitrequest                               (mm_interconnect_0_dma_lcd_0_avalon_waitrequest),                   //                                                     .waitrequest
+		.DMA_LCD_0_avalon_chipselect                                (mm_interconnect_0_dma_lcd_0_avalon_chipselect),                    //                                                     .chipselect
 		.GPIO_parallel_port_0_avalon_slave_0_address                (mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_address),    //                  GPIO_parallel_port_0_avalon_slave_0.address
 		.GPIO_parallel_port_0_avalon_slave_0_write                  (mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_write),      //                                                     .write
 		.GPIO_parallel_port_0_avalon_slave_0_read                   (mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_read),       //                                                     .read
@@ -296,11 +321,6 @@ module configuration (
 		.jtag_uart_avalon_jtag_slave_writedata                      (mm_interconnect_0_jtag_uart_avalon_jtag_slave_writedata),          //                                                     .writedata
 		.jtag_uart_avalon_jtag_slave_waitrequest                    (mm_interconnect_0_jtag_uart_avalon_jtag_slave_waitrequest),        //                                                     .waitrequest
 		.jtag_uart_avalon_jtag_slave_chipselect                     (mm_interconnect_0_jtag_uart_avalon_jtag_slave_chipselect),         //                                                     .chipselect
-		.LCD_controller_0_avalon_slave_0_address                    (mm_interconnect_0_lcd_controller_0_avalon_slave_0_address),        //                      LCD_controller_0_avalon_slave_0.address
-		.LCD_controller_0_avalon_slave_0_write                      (mm_interconnect_0_lcd_controller_0_avalon_slave_0_write),          //                                                     .write
-		.LCD_controller_0_avalon_slave_0_writedata                  (mm_interconnect_0_lcd_controller_0_avalon_slave_0_writedata),      //                                                     .writedata
-		.LCD_controller_0_avalon_slave_0_waitrequest                (mm_interconnect_0_lcd_controller_0_avalon_slave_0_waitrequest),    //                                                     .waitrequest
-		.LCD_controller_0_avalon_slave_0_chipselect                 (mm_interconnect_0_lcd_controller_0_avalon_slave_0_chipselect),     //                                                     .chipselect
 		.LEDs_s1_address                                            (mm_interconnect_0_leds_s1_address),                                //                                              LEDs_s1.address
 		.LEDs_s1_write                                              (mm_interconnect_0_leds_s1_write),                                  //                                                     .write
 		.LEDs_s1_readdata                                           (mm_interconnect_0_leds_s1_readdata),                               //                                                     .readdata

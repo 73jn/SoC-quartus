@@ -47,16 +47,16 @@ module configuration_mm_interconnect_0_router_004_default_decode
      parameter DEFAULT_CHANNEL = 0,
                DEFAULT_WR_CHANNEL = -1,
                DEFAULT_RD_CHANNEL = -1,
-               DEFAULT_DESTID = 0 
+               DEFAULT_DESTID = 1 
    )
-  (output [72 - 69 : 0] default_destination_id,
+  (output [96 - 93 : 0] default_destination_id,
    output [9-1 : 0] default_wr_channel,
    output [9-1 : 0] default_rd_channel,
    output [9-1 : 0] default_src_channel
   );
 
   assign default_destination_id = 
-    DEFAULT_DESTID[72 - 69 : 0];
+    DEFAULT_DESTID[96 - 93 : 0];
 
   generate
     if (DEFAULT_CHANNEL == -1) begin : no_default_channel_assignment
@@ -93,7 +93,7 @@ module configuration_mm_interconnect_0_router_004
     // Command Sink (Input)
     // -------------------
     input                       sink_valid,
-    input  [86-1 : 0]    sink_data,
+    input  [110-1 : 0]    sink_data,
     input                       sink_startofpacket,
     input                       sink_endofpacket,
     output                      sink_ready,
@@ -102,7 +102,7 @@ module configuration_mm_interconnect_0_router_004
     // Command Source (Output)
     // -------------------
     output                          src_valid,
-    output reg [86-1    : 0] src_data,
+    output reg [110-1    : 0] src_data,
     output reg [9-1 : 0] src_channel,
     output                          src_startofpacket,
     output                          src_endofpacket,
@@ -112,18 +112,18 @@ module configuration_mm_interconnect_0_router_004
     // -------------------------------------------------------
     // Local parameters and variables
     // -------------------------------------------------------
-    localparam PKT_ADDR_H = 43;
-    localparam PKT_ADDR_L = 18;
-    localparam PKT_DEST_ID_H = 72;
-    localparam PKT_DEST_ID_L = 69;
-    localparam PKT_PROTECTION_H = 76;
-    localparam PKT_PROTECTION_L = 74;
-    localparam ST_DATA_W = 86;
+    localparam PKT_ADDR_H = 67;
+    localparam PKT_ADDR_L = 36;
+    localparam PKT_DEST_ID_H = 96;
+    localparam PKT_DEST_ID_L = 93;
+    localparam PKT_PROTECTION_H = 100;
+    localparam PKT_PROTECTION_L = 98;
+    localparam ST_DATA_W = 110;
     localparam ST_CHANNEL_W = 9;
     localparam DECODER_TYPE = 1;
 
-    localparam PKT_TRANS_WRITE = 46;
-    localparam PKT_TRANS_READ  = 47;
+    localparam PKT_TRANS_WRITE = 70;
+    localparam PKT_TRANS_READ  = 71;
 
     localparam PKT_ADDR_W = PKT_ADDR_H-PKT_ADDR_L + 1;
     localparam PKT_DEST_ID_W = PKT_DEST_ID_H-PKT_DEST_ID_L + 1;
@@ -184,7 +184,7 @@ module configuration_mm_interconnect_0_router_004
 
 
 
-        if (destid == 0 ) begin
+        if (destid == 1 ) begin
             src_channel = 9'b1;
         end
 

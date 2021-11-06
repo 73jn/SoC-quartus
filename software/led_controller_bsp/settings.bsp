@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Nov 6, 2021 10:39:32 AM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1636191572047</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Nov 6, 2021 6:17:14 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1636219034522</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/quartus/Desktop/quartus-projects/software/led_controller_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../configuration.sopcinfo</SopcDesignFile>
@@ -905,44 +905,44 @@
                 <attributes>memory</attributes>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>timer_0</slaveDescriptor>
+                <slaveDescriptor>DMA_LCD_0</slaveDescriptor>
                 <addressRange>0x02001000 - 0x0200101F</addressRange>
+                <addressSpan>32</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
+                <slaveDescriptor>timer_0</slaveDescriptor>
+                <addressRange>0x02001020 - 0x0200103F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes>timer</attributes>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>GPIO_parallel_port_0</slaveDescriptor>
-                <addressRange>0x02001020 - 0x0200103F</addressRange>
+                <addressRange>0x02001040 - 0x0200105F</addressRange>
                 <addressSpan>32</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
-                <slaveDescriptor>LCD_controller_0</slaveDescriptor>
-                <addressRange>0x02001040 - 0x0200104F</addressRange>
-                <addressSpan>16</addressSpan>
-                <attributes/>
-        </MemoryMap>
-        <MemoryMap>
                 <slaveDescriptor>LEDs</slaveDescriptor>
-                <addressRange>0x02001050 - 0x0200105F</addressRange>
-                <addressSpan>16</addressSpan>
-                <attributes/>
-        </MemoryMap>
-        <MemoryMap>
-                <slaveDescriptor>altpll_0</slaveDescriptor>
                 <addressRange>0x02001060 - 0x0200106F</addressRange>
                 <addressSpan>16</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
+                <slaveDescriptor>altpll_0</slaveDescriptor>
+                <addressRange>0x02001070 - 0x0200107F</addressRange>
+                <addressSpan>16</addressSpan>
+                <attributes/>
+        </MemoryMap>
+        <MemoryMap>
                 <slaveDescriptor>sysid_qsys_0</slaveDescriptor>
-                <addressRange>0x02001070 - 0x02001077</addressRange>
+                <addressRange>0x02001080 - 0x02001087</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes/>
         </MemoryMap>
         <MemoryMap>
                 <slaveDescriptor>jtag_uart</slaveDescriptor>
-                <addressRange>0x02001078 - 0x0200107F</addressRange>
+                <addressRange>0x02001088 - 0x0200108F</addressRange>
                 <addressSpan>8</addressSpan>
                 <attributes>printable</attributes>
         </MemoryMap>

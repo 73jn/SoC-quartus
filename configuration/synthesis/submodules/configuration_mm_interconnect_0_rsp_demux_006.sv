@@ -27,8 +27,8 @@
 
 // ------------------------------------------
 // Generation parameters:
-//   output_name:         configuration_mm_interconnect_0_rsp_demux_004
-//   ST_DATA_W:           104
+//   output_name:         configuration_mm_interconnect_0_rsp_demux_006
+//   ST_DATA_W:           92
 //   ST_CHANNEL_W:        9
 //   NUM_OUTPUTS:         2
 //   VALID_WIDTH:         1
@@ -40,13 +40,13 @@
 // 15610 - Warning: Design contains x input pin(s) that do not drive logic
 //------------------------------------------
 
-module configuration_mm_interconnect_0_rsp_demux_004
+module configuration_mm_interconnect_0_rsp_demux_006
 (
     // -------------------
     // Sink
     // -------------------
     input  [1-1      : 0]   sink_valid,
-    input  [104-1    : 0]   sink_data, // ST_DATA_W=104
+    input  [92-1    : 0]   sink_data, // ST_DATA_W=92
     input  [9-1 : 0]   sink_channel, // ST_CHANNEL_W=9
     input                         sink_startofpacket,
     input                         sink_endofpacket,
@@ -56,14 +56,14 @@ module configuration_mm_interconnect_0_rsp_demux_004
     // Sources 
     // -------------------
     output reg                      src0_valid,
-    output reg [104-1    : 0] src0_data, // ST_DATA_W=104
+    output reg [92-1    : 0] src0_data, // ST_DATA_W=92
     output reg [9-1 : 0] src0_channel, // ST_CHANNEL_W=9
     output reg                      src0_startofpacket,
     output reg                      src0_endofpacket,
     input                           src0_ready,
 
     output reg                      src1_valid,
-    output reg [104-1    : 0] src1_data, // ST_DATA_W=104
+    output reg [92-1    : 0] src1_data, // ST_DATA_W=92
     output reg [9-1 : 0] src1_channel, // ST_CHANNEL_W=9
     output reg                      src1_startofpacket,
     output reg                      src1_endofpacket,
