@@ -1,0 +1,16 @@
+Fitter Status : Successful - Sat Nov  6 10:37:22 2021
+Quartus Prime Version : 18.1.0 Build 625 09/12/2018 SJ Lite Edition
+Revision Name : test1
+Top-level Entity Name : test1
+Family : Cyclone IV E
+Device : EP4CE30F23C7
+Timing Models : Final
+Total logic elements : 5,282 / 28,848 ( 18 % )
+    Total combinational functions : 4,311 / 28,848 ( 15 % )
+    Dedicated logic registers : 3,519 / 28,848 ( 12 % )
+Total registers : 3587
+Total pins : 94 / 329 ( 29 % )
+Total virtual pins : 0
+Total memory bits : 67,904 / 608,256 ( 11 % )
+Embedded Multiplier 9-bit elements : 6 / 132 ( 5 % )
+Total PLLs : 1 / 4 ( 25 % )
