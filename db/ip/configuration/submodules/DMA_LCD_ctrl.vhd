@@ -36,16 +36,25 @@ end entity DMA_LCD_ctrl;
 
 architecture rtl of DMA_LCD_ctrl is
 	signal iRegData: std_logic_vector (15 DOWNTO 0);
+	signal iRegDataFromDMA: std_logic_vector (15 DOWNTO 0);
 	signal iRegPointer: std_logic_vector (31 DOWNTO 0);
 	signal iRegSize: std_logic_vector (31 DOWNTO 0);
 	signal iRegControl:  std_logic_vector (2 DOWNTO 0);
 	signal iD_C_n: std_logic;
 	signal iRegDMA: std_logic_vector(2 DOWNTO 0);
+	signal memMaster_waitrequest : std_logic;
+	signal sendToLCD : std_logic;
+	signal flagIsLocal : std_logic;
 
 	type smState is (
 	    IDLE, STATE1, STATE2
 	  );
 	signal mainState : smState;
+
+	type smStateDMA is (
+			IDLEDMA, READMEM, SEND, WAITTOSEND
+		);
+	signal mainStateDMA : smStateDMA;
 begin
 -------- register model (a proposal) -----------
 -- 000 write command to LCD
@@ -56,8 +65,8 @@ begin
 --	bit 0 => start transfer
 --	bit 1 => reserved
 --	bit 2 => IRQ ack
-master_read <= '0';
-master_address <= (others => '0');
+--master_read <= '0';
+--master_address <= (others => '0');
 end_of_transaction_irq <= '0';
 avalon_read_data <= (others => '0');
 
@@ -71,6 +80,7 @@ begin
 		iRegDMA <= (others => '0');
 		iRegPointer <= (others => '0');
 	elsif rising_edge(signalsClk) then
+		iRegDMA(0) <= '0'; -- reset the start transfer
 		if avalon_cs = '1' and avalon_wr = '1' then-- Write cycle
 			case avalon_address(2 downto 0) is
 				when "000" =>
@@ -94,7 +104,16 @@ end process pRegWr;
 
 
 LCD_D_C_n <= iD_C_n;
-LCD_data <= iRegData;
+
+process(iRegData, iRegDataFromDMA, flagIsLocal)
+BEGIN
+  if flagIsLocal = '0' then
+		LCD_data <= iRegDataFromDMA;
+	else
+		LCD_data <= iRegData;
+	end if;
+end process;
+
 -- Synchronize outputs
 pSync:process(signalsClk, nReset)
 begin
@@ -119,28 +138,84 @@ begin
 	if nReset = '0' then
 		mainState <= IDLE;
 		avalon_waitrequest <= '0';
+		flagIsLocal <= '1';
+		LCD_WR_n <= '1';
 	elsif rising_edge(signalsClk) then
 		case mainState is
 			when IDLE =>
 				LCD_WR_n <= '1';
-				if avalon_cs = '1' and avalon_wr = '1' and (avalon_address(2 downto 0) = "000" or avalon_address(2 downto 0) = "001") then
+			if sendToLCD = '1' then -- send
+					mainState <= STATE1;
+					LCD_WR_n <='0';
+					flagIsLocal <= '0';
+			elsif avalon_cs = '1' and avalon_wr = '1' and (avalon_address(2 downto 0) = "000" or avalon_address(2 downto 0) = "001") then
 					mainState <= STATE1;
 					avalon_waitrequest <= '1';
 					LCD_WR_n <='0';
-                end if;
+					flagIsLocal <= '1';
+        end if;
 			when STATE1 =>
-					LCD_WR_n <='1';
+				LCD_WR_n <='1';
 				mainState <= STATE2;
-				avalon_waitrequest <= '1';
+				if flagIsLocal = '1' then
+					avalon_waitrequest <= '1';
+				end if;
 
 			when STATE2 =>
 				mainState <= IDLE;
-				avalon_waitrequest <= '0';
+				if flagIsLocal = '1' then
+					avalon_waitrequest <= '0';
+				end if;
 				LCD_WR_n <='1';
 
 		end case;
 	end if;
 end process smWrite;
+
+smMem:process(signalsClk,nReset)
+    variable counterTq : integer;
+BEGIN
+if nReset = '0' then
+	mainStateDMA <= IDLEDMA;
+	sendToLCD <= '0';
+	master_read <= '0';
+	master_address <= (others => '0');
+	iRegDataFromDMA <= (others => '0');
+	counterTq := 0;
+elsif rising_edge(signalsClk) then
+	case mainStateDMA is
+		WHEN IDLEDMA =>
+			if iRegDMA(0) = '1' then -- send
+				mainStateDMA <= READMEM;
+			end if;
+		WHEN READMEM =>
+			sendToLCD <= '0';
+			master_address <= std_logic_vector( unsigned(iRegPointer) + counterTq);
+			master_read <= '1';
+			if ((counterTq <= unsigned(iRegSize))) then
+				if (memMaster_waitrequest = '1' AND master_waitrequest = '0') then -- detect when memory has finish
+					iRegDataFromDMA <= master_readdata;
+					mainStateDMA <= WAITTOSEND;
+					memMaster_waitrequest <= master_waitrequest;
+				else
+					memMaster_waitrequest <= master_waitrequest;
+				end if;
+			else
+				mainStateDMA <= IDLEDMA;
+				counterTq := 0;
+			end if;
+		WHEN SEND =>
+			sendToLCD <= '1';
+			counterTq := counterTq + 2;
+			mainStateDMA <= READMEM;
+		WHEN WAITTOSEND =>
+			if mainState = IDLE then
+				mainStateDMA <= SEND;
+			end if;
+	end case;
+end if;
+end process smMem;
+
 
 LCD_RD <= '1'; --always 1 (disabled)
 

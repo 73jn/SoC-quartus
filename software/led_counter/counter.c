@@ -10,12 +10,12 @@
 #include "system.h"
 
 #include "sys/alt_irq.h"
-
+#include <stdint.h>
 int counter = 0;
 
-int redPicture[240*320];
-int greenPicture[240*320];
-int bluePicture[240*320];
+uint16_t redPicture[240*320];
+uint16_t greenPicture[240*320];
+uint16_t bluePicture[240*320];
 
 void LCD_Write_Command(int command) {
     IOWR_16DIRECT(DMA_LCD_0_BASE,0b000*4,command); // Adapt this line
@@ -117,10 +117,10 @@ void init_LCD() {
 
 }
 
-void sendPixel(int red, int green, int blue) {
+void sendPixel(uint16_t red, uint16_t green, uint16_t blue) {
 	LCD_Write_Data(((blue >> 3)<<11) + ((green >> 2)<<5) + (red >> 3));
 }
-void sendPicture(int red, int green, int blue){
+void sendPicture(uint16_t red, uint16_t green, uint16_t blue){
 	counter = 0;
 	for (int i = 0; i < (320*240); i++){
 		sendPixel(red, green, blue);
@@ -133,7 +133,7 @@ void timer_interrupt(void *context, alt_u32 id){
 	// acknowledge IRQ on the timer;
 	IOWR_16DIRECT(TIMER_0_BASE,0,0); //Reset the flag interrupt
 }
-int RGBtoBGR (int red, int green, int blue){
+int RGBtoBGR (uint16_t red, uint16_t green, uint16_t blue){
 	return (((blue >> 3)<<11) + ((green >> 2)<<5) + (red >> 3));
 }
 void initPictures(){
@@ -143,7 +143,7 @@ void initPictures(){
 		bluePicture[i] = RGBtoBGR(0,0,255);
 	}
 }
-void sendPictureTab(int* tab){
+void sendPictureTab(uint16_t* tab){
 	counter = 0;
 	for (int i = 0; i < (320*240); i++){
 		LCD_Write_Data(tab[i]);
@@ -161,14 +161,18 @@ int main(){
 	alt_irq_register(TIMER_0_IRQ,(void*)2,(alt_isr_func)timer_interrupt);
 
 	IOWR_16DIRECT(TIMER_0_BASE,4,0b111); // enbale timer 0
-
-	init_LCD();
 	initPictures();
+	init_LCD();
+
 
 	LCD_Write_Command(0x002C);
+	IOWR_32DIRECT(DMA_LCD_0_BASE,0b010*4,redPicture); //Give the picture data pointer
+	IOWR_32DIRECT(DMA_LCD_0_BASE,0b011*4,240*320); //Give the size
+	IOWR_32DIRECT(DMA_LCD_0_BASE,0b100*4,0b001); //Start transfer
 	while(1){
-		sendPictureTab(redPicture);
-		sendPictureTab(bluePicture);
+		//IOWR_32DIRECT(DMA_LCD_0_BASE,0b100*4,0b001); //Start transfer
+		//sendPictureTab(redPicture);
+		//sendPictureTab(bluePicture);
 
 		IOWR_32DIRECT(GPIO_PARALLEL_PORT_0_BASE, 0b010*4, counter);// write counter value on the parallel port;
 		//counter++;
