@@ -45,7 +45,7 @@ architecture rtl of DMA_LCD_ctrl is
 	signal memMaster_waitrequest : std_logic;
 	signal sendToLCD : std_logic;
 	signal flagIsLocal : std_logic;
-
+  signal iRegMasterReadData : std_logic_vector (15 DOWNTO 0);
 	type smState is (
 	    IDLE, STATE1, STATE2
 	  );
@@ -69,7 +69,7 @@ begin
 --master_address <= (others => '0');
 end_of_transaction_irq <= '0';
 avalon_read_data <= (others => '0');
-
+iRegMasterReadData <= master_readdata; --debug
 pRegWr : process(signalsClk, nReset)
 begin
 	if nReset = '0' then
@@ -185,15 +185,18 @@ if nReset = '0' then
 elsif rising_edge(signalsClk) then
 	case mainStateDMA is
 		WHEN IDLEDMA =>
+			master_read <= '0';
 			if iRegDMA(0) = '1' then -- send
 				mainStateDMA <= READMEM;
+				master_address <= std_logic_vector( unsigned(iRegPointer) + counterTq);
 			end if;
 		WHEN READMEM =>
 			sendToLCD <= '0';
-			master_address <= std_logic_vector( unsigned(iRegPointer) + counterTq);
+			--master_address <= std_logic_vector( unsigned(iRegPointer) + counterTq);
 			master_read <= '1';
 			if ((counterTq <= unsigned(iRegSize))) then
-				if (memMaster_waitrequest = '1' AND master_waitrequest = '0') then -- detect when memory has finish
+				--if (memMaster_waitrequest = '1' AND master_waitrequest = '0') then -- detect when memory has finish
+				if master_waitrequest = '0' then
 					iRegDataFromDMA <= master_readdata;
 					mainStateDMA <= WAITTOSEND;
 					memMaster_waitrequest <= master_waitrequest;
@@ -206,11 +209,13 @@ elsif rising_edge(signalsClk) then
 			end if;
 		WHEN SEND =>
 			sendToLCD <= '1';
-			counterTq := counterTq + 2;
 			mainStateDMA <= READMEM;
 		WHEN WAITTOSEND =>
+		  master_read <= '0';
 			if mainState = IDLE then
+				counterTq := counterTq + 2;
 				mainStateDMA <= SEND;
+				master_address <= std_logic_vector( unsigned(iRegPointer) + counterTq);
 			end if;
 	end case;
 end if;

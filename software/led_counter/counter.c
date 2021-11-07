@@ -138,9 +138,15 @@ int RGBtoBGR (uint16_t red, uint16_t green, uint16_t blue){
 }
 void initPictures(){
 	for (int i = 0; i < (320*240); i++){
-		redPicture[i] = RGBtoBGR(255,0,0);
-		greenPicture[i] = RGBtoBGR(0,255,0);
-		bluePicture[i] = RGBtoBGR(0,0,255);
+		//Force to store into the sdram fuck
+		IOWR_16DIRECT(redPicture,i*2,RGBtoBGR(255,0,0)); // Adapt this line
+		IOWR_16DIRECT(greenPicture,i*2,RGBtoBGR(0,255,0)); // Adapt this line
+		IOWR_16DIRECT(bluePicture,i*2,RGBtoBGR(0,0,255)); // Adapt this line
+
+		//On the cache
+		//redPicture[i] = RGBtoBGR(255,0,0);
+		//greenPicture[i] = RGBtoBGR(0,255,0);
+		//bluePicture[i] = RGBtoBGR(0,0,255);
 	}
 }
 void sendPictureTab(uint16_t* tab){
@@ -166,8 +172,10 @@ int main(){
 
 
 	LCD_Write_Command(0x002C);
-	IOWR_32DIRECT(DMA_LCD_0_BASE,0b010*4,redPicture); //Give the picture data pointer
-	IOWR_32DIRECT(DMA_LCD_0_BASE,0b011*4,240*320); //Give the size
+	printf("addr = %d \n", redPicture);
+	printf("& = %d \n", &redPicture);
+	IOWR_32DIRECT(DMA_LCD_0_BASE,0b010*4,greenPicture); //Give the picture data pointer
+	IOWR_32DIRECT(DMA_LCD_0_BASE,0b011*4,10); //Give the size
 	IOWR_32DIRECT(DMA_LCD_0_BASE,0b100*4,0b001); //Start transfer
 	while(1){
 		//IOWR_32DIRECT(DMA_LCD_0_BASE,0b100*4,0b001); //Start transfer
