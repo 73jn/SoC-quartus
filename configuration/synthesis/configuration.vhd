@@ -450,6 +450,23 @@ architecture rtl of configuration is
 	signal cpu_instruction_master_address                                   : std_logic_vector(25 downto 0); -- cpu:i_address -> mm_interconnect_0:cpu_instruction_master_address
 	signal cpu_instruction_master_read                                      : std_logic;                     -- cpu:i_read -> mm_interconnect_0:cpu_instruction_master_read
 	signal cpu_instruction_master_readdatavalid                             : std_logic;                     -- mm_interconnect_0:cpu_instruction_master_readdatavalid -> cpu:i_readdatavalid
+	signal mm_interconnect_0_sdram_controller_s1_chipselect                 : std_logic;                     -- mm_interconnect_0:SDRAM_controller_s1_chipselect -> SDRAM_controller:az_cs
+	signal mm_interconnect_0_sdram_controller_s1_readdata                   : std_logic_vector(15 downto 0); -- SDRAM_controller:za_data -> mm_interconnect_0:SDRAM_controller_s1_readdata
+	signal mm_interconnect_0_sdram_controller_s1_waitrequest                : std_logic;                     -- SDRAM_controller:za_waitrequest -> mm_interconnect_0:SDRAM_controller_s1_waitrequest
+	signal mm_interconnect_0_sdram_controller_s1_address                    : std_logic_vector(22 downto 0); -- mm_interconnect_0:SDRAM_controller_s1_address -> SDRAM_controller:az_addr
+	signal mm_interconnect_0_sdram_controller_s1_read                       : std_logic;                     -- mm_interconnect_0:SDRAM_controller_s1_read -> mm_interconnect_0_sdram_controller_s1_read:in
+	signal mm_interconnect_0_sdram_controller_s1_byteenable                 : std_logic_vector(1 downto 0);  -- mm_interconnect_0:SDRAM_controller_s1_byteenable -> mm_interconnect_0_sdram_controller_s1_byteenable:in
+	signal mm_interconnect_0_sdram_controller_s1_readdatavalid              : std_logic;                     -- SDRAM_controller:za_valid -> mm_interconnect_0:SDRAM_controller_s1_readdatavalid
+	signal mm_interconnect_0_sdram_controller_s1_write                      : std_logic;                     -- mm_interconnect_0:SDRAM_controller_s1_write -> mm_interconnect_0_sdram_controller_s1_write:in
+	signal mm_interconnect_0_sdram_controller_s1_writedata                  : std_logic_vector(15 downto 0); -- mm_interconnect_0:SDRAM_controller_s1_writedata -> SDRAM_controller:az_data
+	signal mm_interconnect_0_cpu_debug_mem_slave_readdata                   : std_logic_vector(31 downto 0); -- cpu:debug_mem_slave_readdata -> mm_interconnect_0:cpu_debug_mem_slave_readdata
+	signal mm_interconnect_0_cpu_debug_mem_slave_waitrequest                : std_logic;                     -- cpu:debug_mem_slave_waitrequest -> mm_interconnect_0:cpu_debug_mem_slave_waitrequest
+	signal mm_interconnect_0_cpu_debug_mem_slave_debugaccess                : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_debugaccess -> cpu:debug_mem_slave_debugaccess
+	signal mm_interconnect_0_cpu_debug_mem_slave_address                    : std_logic_vector(8 downto 0);  -- mm_interconnect_0:cpu_debug_mem_slave_address -> cpu:debug_mem_slave_address
+	signal mm_interconnect_0_cpu_debug_mem_slave_read                       : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_read -> cpu:debug_mem_slave_read
+	signal mm_interconnect_0_cpu_debug_mem_slave_byteenable                 : std_logic_vector(3 downto 0);  -- mm_interconnect_0:cpu_debug_mem_slave_byteenable -> cpu:debug_mem_slave_byteenable
+	signal mm_interconnect_0_cpu_debug_mem_slave_write                      : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_write -> cpu:debug_mem_slave_write
+	signal mm_interconnect_0_cpu_debug_mem_slave_writedata                  : std_logic_vector(31 downto 0); -- mm_interconnect_0:cpu_debug_mem_slave_writedata -> cpu:debug_mem_slave_writedata
 	signal mm_interconnect_0_dma_lcd_0_avalon_chipselect                    : std_logic;                     -- mm_interconnect_0:DMA_LCD_0_avalon_chipselect -> DMA_LCD_0:avalon_cs
 	signal mm_interconnect_0_dma_lcd_0_avalon_readdata                      : std_logic_vector(31 downto 0); -- DMA_LCD_0:avalon_read_data -> mm_interconnect_0:DMA_LCD_0_avalon_readdata
 	signal mm_interconnect_0_dma_lcd_0_avalon_waitrequest                   : std_logic;                     -- DMA_LCD_0:avalon_waitrequest -> mm_interconnect_0:DMA_LCD_0_avalon_waitrequest
@@ -472,28 +489,11 @@ architecture rtl of configuration is
 	signal mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_writedata  : std_logic_vector(31 downto 0); -- mm_interconnect_0:GPIO_parallel_port_0_avalon_slave_0_writedata -> GPIO_parallel_port_0:WriteData
 	signal mm_interconnect_0_sysid_qsys_0_control_slave_readdata            : std_logic_vector(31 downto 0); -- sysid_qsys_0:readdata -> mm_interconnect_0:sysid_qsys_0_control_slave_readdata
 	signal mm_interconnect_0_sysid_qsys_0_control_slave_address             : std_logic_vector(0 downto 0);  -- mm_interconnect_0:sysid_qsys_0_control_slave_address -> sysid_qsys_0:address
-	signal mm_interconnect_0_cpu_debug_mem_slave_readdata                   : std_logic_vector(31 downto 0); -- cpu:debug_mem_slave_readdata -> mm_interconnect_0:cpu_debug_mem_slave_readdata
-	signal mm_interconnect_0_cpu_debug_mem_slave_waitrequest                : std_logic;                     -- cpu:debug_mem_slave_waitrequest -> mm_interconnect_0:cpu_debug_mem_slave_waitrequest
-	signal mm_interconnect_0_cpu_debug_mem_slave_debugaccess                : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_debugaccess -> cpu:debug_mem_slave_debugaccess
-	signal mm_interconnect_0_cpu_debug_mem_slave_address                    : std_logic_vector(8 downto 0);  -- mm_interconnect_0:cpu_debug_mem_slave_address -> cpu:debug_mem_slave_address
-	signal mm_interconnect_0_cpu_debug_mem_slave_read                       : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_read -> cpu:debug_mem_slave_read
-	signal mm_interconnect_0_cpu_debug_mem_slave_byteenable                 : std_logic_vector(3 downto 0);  -- mm_interconnect_0:cpu_debug_mem_slave_byteenable -> cpu:debug_mem_slave_byteenable
-	signal mm_interconnect_0_cpu_debug_mem_slave_write                      : std_logic;                     -- mm_interconnect_0:cpu_debug_mem_slave_write -> cpu:debug_mem_slave_write
-	signal mm_interconnect_0_cpu_debug_mem_slave_writedata                  : std_logic_vector(31 downto 0); -- mm_interconnect_0:cpu_debug_mem_slave_writedata -> cpu:debug_mem_slave_writedata
 	signal mm_interconnect_0_altpll_0_pll_slave_readdata                    : std_logic_vector(31 downto 0); -- altpll_0:readdata -> mm_interconnect_0:altpll_0_pll_slave_readdata
 	signal mm_interconnect_0_altpll_0_pll_slave_address                     : std_logic_vector(1 downto 0);  -- mm_interconnect_0:altpll_0_pll_slave_address -> altpll_0:address
 	signal mm_interconnect_0_altpll_0_pll_slave_read                        : std_logic;                     -- mm_interconnect_0:altpll_0_pll_slave_read -> altpll_0:read
 	signal mm_interconnect_0_altpll_0_pll_slave_write                       : std_logic;                     -- mm_interconnect_0:altpll_0_pll_slave_write -> altpll_0:write
 	signal mm_interconnect_0_altpll_0_pll_slave_writedata                   : std_logic_vector(31 downto 0); -- mm_interconnect_0:altpll_0_pll_slave_writedata -> altpll_0:writedata
-	signal mm_interconnect_0_sdram_controller_s1_chipselect                 : std_logic;                     -- mm_interconnect_0:SDRAM_controller_s1_chipselect -> SDRAM_controller:az_cs
-	signal mm_interconnect_0_sdram_controller_s1_readdata                   : std_logic_vector(15 downto 0); -- SDRAM_controller:za_data -> mm_interconnect_0:SDRAM_controller_s1_readdata
-	signal mm_interconnect_0_sdram_controller_s1_waitrequest                : std_logic;                     -- SDRAM_controller:za_waitrequest -> mm_interconnect_0:SDRAM_controller_s1_waitrequest
-	signal mm_interconnect_0_sdram_controller_s1_address                    : std_logic_vector(22 downto 0); -- mm_interconnect_0:SDRAM_controller_s1_address -> SDRAM_controller:az_addr
-	signal mm_interconnect_0_sdram_controller_s1_read                       : std_logic;                     -- mm_interconnect_0:SDRAM_controller_s1_read -> mm_interconnect_0_sdram_controller_s1_read:in
-	signal mm_interconnect_0_sdram_controller_s1_byteenable                 : std_logic_vector(1 downto 0);  -- mm_interconnect_0:SDRAM_controller_s1_byteenable -> mm_interconnect_0_sdram_controller_s1_byteenable:in
-	signal mm_interconnect_0_sdram_controller_s1_readdatavalid              : std_logic;                     -- SDRAM_controller:za_valid -> mm_interconnect_0:SDRAM_controller_s1_readdatavalid
-	signal mm_interconnect_0_sdram_controller_s1_write                      : std_logic;                     -- mm_interconnect_0:SDRAM_controller_s1_write -> mm_interconnect_0_sdram_controller_s1_write:in
-	signal mm_interconnect_0_sdram_controller_s1_writedata                  : std_logic_vector(15 downto 0); -- mm_interconnect_0:SDRAM_controller_s1_writedata -> SDRAM_controller:az_data
 	signal mm_interconnect_0_leds_s1_chipselect                             : std_logic;                     -- mm_interconnect_0:LEDs_s1_chipselect -> LEDs:chipselect
 	signal mm_interconnect_0_leds_s1_readdata                               : std_logic_vector(31 downto 0); -- LEDs:readdata -> mm_interconnect_0:LEDs_s1_readdata
 	signal mm_interconnect_0_leds_s1_address                                : std_logic_vector(1 downto 0);  -- mm_interconnect_0:LEDs_s1_address -> LEDs:address
@@ -512,11 +512,11 @@ architecture rtl of configuration is
 	signal cpu_debug_reset_request_reset                                    : std_logic;                     -- cpu:debug_reset_request -> [rst_controller:reset_in1, rst_controller_001:reset_in1]
 	signal rst_controller_001_reset_out_reset                               : std_logic;                     -- rst_controller_001:reset_out -> [altpll_0:reset, mm_interconnect_0:altpll_0_inclk_interface_reset_reset_bridge_in_reset_reset]
 	signal reset_reset_n_ports_inv                                          : std_logic;                     -- reset_reset_n:inv -> [rst_controller:reset_in0, rst_controller_001:reset_in0]
-	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_read_ports_inv     : std_logic;                     -- mm_interconnect_0_jtag_uart_avalon_jtag_slave_read:inv -> jtag_uart:av_read_n
-	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_write_ports_inv    : std_logic;                     -- mm_interconnect_0_jtag_uart_avalon_jtag_slave_write:inv -> jtag_uart:av_write_n
 	signal mm_interconnect_0_sdram_controller_s1_read_ports_inv             : std_logic;                     -- mm_interconnect_0_sdram_controller_s1_read:inv -> SDRAM_controller:az_rd_n
 	signal mm_interconnect_0_sdram_controller_s1_byteenable_ports_inv       : std_logic_vector(1 downto 0);  -- mm_interconnect_0_sdram_controller_s1_byteenable:inv -> SDRAM_controller:az_be_n
 	signal mm_interconnect_0_sdram_controller_s1_write_ports_inv            : std_logic;                     -- mm_interconnect_0_sdram_controller_s1_write:inv -> SDRAM_controller:az_wr_n
+	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_read_ports_inv     : std_logic;                     -- mm_interconnect_0_jtag_uart_avalon_jtag_slave_read:inv -> jtag_uart:av_read_n
+	signal mm_interconnect_0_jtag_uart_avalon_jtag_slave_write_ports_inv    : std_logic;                     -- mm_interconnect_0_jtag_uart_avalon_jtag_slave_write:inv -> jtag_uart:av_write_n
 	signal mm_interconnect_0_leds_s1_write_ports_inv                        : std_logic;                     -- mm_interconnect_0_leds_s1_write:inv -> LEDs:write_n
 	signal mm_interconnect_0_timer_0_s1_write_ports_inv                     : std_logic;                     -- mm_interconnect_0_timer_0_s1_write:inv -> timer_0:write_n
 	signal rst_controller_reset_out_reset_ports_inv                         : std_logic;                     -- rst_controller_reset_out_reset:inv -> [DMA_LCD_0:nReset, GPIO_parallel_port_0:nReset, LEDs:reset_n, SDRAM_controller:reset_n, cpu:reset_n, jtag_uart:rst_n, sysid_qsys_0:reset_n, timer_0:reset_n]
@@ -909,15 +909,15 @@ begin
 
 	reset_reset_n_ports_inv <= not reset_reset_n;
 
-	mm_interconnect_0_jtag_uart_avalon_jtag_slave_read_ports_inv <= not mm_interconnect_0_jtag_uart_avalon_jtag_slave_read;
-
-	mm_interconnect_0_jtag_uart_avalon_jtag_slave_write_ports_inv <= not mm_interconnect_0_jtag_uart_avalon_jtag_slave_write;
-
 	mm_interconnect_0_sdram_controller_s1_read_ports_inv <= not mm_interconnect_0_sdram_controller_s1_read;
 
 	mm_interconnect_0_sdram_controller_s1_byteenable_ports_inv <= not mm_interconnect_0_sdram_controller_s1_byteenable;
 
 	mm_interconnect_0_sdram_controller_s1_write_ports_inv <= not mm_interconnect_0_sdram_controller_s1_write;
+
+	mm_interconnect_0_jtag_uart_avalon_jtag_slave_read_ports_inv <= not mm_interconnect_0_jtag_uart_avalon_jtag_slave_read;
+
+	mm_interconnect_0_jtag_uart_avalon_jtag_slave_write_ports_inv <= not mm_interconnect_0_jtag_uart_avalon_jtag_slave_write;
 
 	mm_interconnect_0_leds_s1_write_ports_inv <= not mm_interconnect_0_leds_s1_write;
 

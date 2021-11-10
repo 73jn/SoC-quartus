@@ -44,7 +44,7 @@
 
 module configuration_mm_interconnect_0_router_001_default_decode
   #(
-     parameter DEFAULT_CHANNEL = 6,
+     parameter DEFAULT_CHANNEL = 0,
                DEFAULT_WR_CHANNEL = -1,
                DEFAULT_RD_CHANNEL = -1,
                DEFAULT_DESTID = 3 
@@ -203,19 +203,19 @@ module configuration_mm_interconnect_0_router_001
 
     // ( 0x1000000 .. 0x2000000 )
     if ( {address[RG:PAD0],{PAD0{1'b0}}} == 26'h1000000   ) begin
-            src_channel = 9'b001000000;
+            src_channel = 9'b000000001;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 3;
     end
 
     // ( 0x2000800 .. 0x2001000 )
     if ( {address[RG:PAD1],{PAD1{1'b0}}} == 26'h2000800   ) begin
-            src_channel = 9'b000010000;
+            src_channel = 9'b000000010;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 5;
     end
 
     // ( 0x2001000 .. 0x2001020 )
     if ( {address[RG:PAD2],{PAD2{1'b0}}} == 26'h2001000   ) begin
-            src_channel = 9'b000000001;
+            src_channel = 9'b000000100;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 0;
     end
 
@@ -227,7 +227,7 @@ module configuration_mm_interconnect_0_router_001
 
     // ( 0x2001040 .. 0x2001060 )
     if ( {address[RG:PAD4],{PAD4{1'b0}}} == 26'h2001040   ) begin
-            src_channel = 9'b000000100;
+            src_channel = 9'b000010000;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 1;
     end
 
@@ -239,19 +239,19 @@ module configuration_mm_interconnect_0_router_001
 
     // ( 0x2001070 .. 0x2001080 )
     if ( {address[RG:PAD6],{PAD6{1'b0}}} == 26'h2001070   ) begin
-            src_channel = 9'b000100000;
+            src_channel = 9'b001000000;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 4;
     end
 
     // ( 0x2001080 .. 0x2001088 )
     if ( {address[RG:PAD7],{PAD7{1'b0}}} == 26'h2001080  && read_transaction  ) begin
-            src_channel = 9'b000001000;
+            src_channel = 9'b000100000;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 7;
     end
 
     // ( 0x2001088 .. 0x2001090 )
     if ( {address[RG:PAD8],{PAD8{1'b0}}} == 26'h2001088   ) begin
-            src_channel = 9'b000000010;
+            src_channel = 9'b000001000;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 6;
     end
 

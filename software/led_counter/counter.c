@@ -137,11 +137,34 @@ int RGBtoBGR (uint16_t red, uint16_t green, uint16_t blue){
 	return (((blue >> 3)<<11) + ((green >> 2)<<5) + (red >> 3));
 }
 void initPictures(){
-	for (int i = 0; i < (320*240); i++){
+	for (int j = 0; j < (240); j++){
+		for (int i = 0; i < 320; i++){
+			if (i > 120){
+				if (j > 160){
+					IOWR_16DIRECT(redPicture,(i*240+j)*2,RGBtoBGR(255,0,0)); // Adapt this line
+					IOWR_16DIRECT(greenPicture,(i*240+j)*2,RGBtoBGR(0,255,0)); // Adapt this line
+					IOWR_16DIRECT(bluePicture,(i*240+j)*2,RGBtoBGR(0,0,255)); // Adapt this line
+				}
+				else{
+					IOWR_16DIRECT(redPicture,(i*240+j)*2,RGBtoBGR(255,255,0)); // Adapt this line
+					IOWR_16DIRECT(greenPicture,(i*240+j)*2,RGBtoBGR(0,255,255)); // Adapt this line
+					IOWR_16DIRECT(bluePicture,(i*240+j)*2,RGBtoBGR(255,0,255)); // Adapt this line
+				}
+			}else{
+				if (j > 160){
+					IOWR_16DIRECT(redPicture,(i*240+j)*2,RGBtoBGR(255,128,0)); // Adapt this line
+					IOWR_16DIRECT(greenPicture,(i*240+j)*2,RGBtoBGR(128,255,0)); // Adapt this line
+					IOWR_16DIRECT(bluePicture,(i*240+j)*2,RGBtoBGR(128,0,255)); // Adapt this line
+				}
+				else{
+					IOWR_16DIRECT(redPicture,(i*240+j)*2,RGBtoBGR(255,255,128)); // Adapt this line
+					IOWR_16DIRECT(greenPicture,(i*240+j)*2,RGBtoBGR(0,128,255)); // Adapt this line
+					IOWR_16DIRECT(bluePicture,(i*240+j)*2,RGBtoBGR(255,0,128)); // Adapt this line
+				}
+			}
+		}
 		//Force to store into the sdram fuck
-		IOWR_16DIRECT(redPicture,i*2,RGBtoBGR(255,0,0)); // Adapt this line
-		IOWR_16DIRECT(greenPicture,i*2,RGBtoBGR(0,255,0)); // Adapt this line
-		IOWR_16DIRECT(bluePicture,i*2,RGBtoBGR(0,0,255)); // Adapt this line
+
 
 		//On the cache
 		//redPicture[i] = RGBtoBGR(255,0,0);
@@ -172,13 +195,16 @@ int main(){
 
 
 	LCD_Write_Command(0x002C);
+
 	printf("addr = %d \n", redPicture);
 	printf("& = %d \n", &redPicture);
+
+	LCD_Write_Data(0x0000);
 	IOWR_32DIRECT(DMA_LCD_0_BASE,0b010*4,greenPicture); //Give the picture data pointer
-	IOWR_32DIRECT(DMA_LCD_0_BASE,0b011*4,10); //Give the size
+	IOWR_32DIRECT(DMA_LCD_0_BASE,0b011*4,320*240*2); //Give the size
 	IOWR_32DIRECT(DMA_LCD_0_BASE,0b100*4,0b001); //Start transfer
 	while(1){
-		//IOWR_32DIRECT(DMA_LCD_0_BASE,0b100*4,0b001); //Start transfer
+
 		//sendPictureTab(redPicture);
 		//sendPictureTab(bluePicture);
 

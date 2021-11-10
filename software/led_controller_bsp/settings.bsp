@@ -2,8 +2,8 @@
 <sch:Settings xmlns:sch="http://www.altera.com/embeddedsw/bsp/schema">
         <BspType>hal</BspType>
         <BspVersion>default</BspVersion>
-        <BspGeneratedTimeStamp>Nov 7, 2021 3:21:50 PM</BspGeneratedTimeStamp>
-        <BspGeneratedUnixTimeStamp>1636294910147</BspGeneratedUnixTimeStamp>
+        <BspGeneratedTimeStamp>Nov 10, 2021 2:16:06 PM</BspGeneratedTimeStamp>
+        <BspGeneratedUnixTimeStamp>1636550166827</BspGeneratedUnixTimeStamp>
         <BspGeneratedLocation>/home/quartus/Desktop/quartus-projects/software/led_controller_bsp</BspGeneratedLocation>
         <BspSettingsFile>settings.bsp</BspSettingsFile>
         <SopcDesignFile>../../configuration.sopcinfo</SopcDesignFile>

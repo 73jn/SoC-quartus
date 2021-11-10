@@ -714,9 +714,9 @@
    kind="avalon"
    version="18.1"
    start="DMA_LCD_0.avalon_master"
-   end="DMA_LCD_0.avalon">
+   end="SDRAM_controller.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x02001000" />
+  <parameter name="baseAddress" value="0x01000000" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection

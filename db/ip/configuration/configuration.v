@@ -47,6 +47,23 @@ module configuration (
 	wire  [25:0] cpu_instruction_master_address;                                   // cpu:i_address -> mm_interconnect_0:cpu_instruction_master_address
 	wire         cpu_instruction_master_read;                                      // cpu:i_read -> mm_interconnect_0:cpu_instruction_master_read
 	wire         cpu_instruction_master_readdatavalid;                             // mm_interconnect_0:cpu_instruction_master_readdatavalid -> cpu:i_readdatavalid
+	wire         mm_interconnect_0_sdram_controller_s1_chipselect;                 // mm_interconnect_0:SDRAM_controller_s1_chipselect -> SDRAM_controller:az_cs
+	wire  [15:0] mm_interconnect_0_sdram_controller_s1_readdata;                   // SDRAM_controller:za_data -> mm_interconnect_0:SDRAM_controller_s1_readdata
+	wire         mm_interconnect_0_sdram_controller_s1_waitrequest;                // SDRAM_controller:za_waitrequest -> mm_interconnect_0:SDRAM_controller_s1_waitrequest
+	wire  [22:0] mm_interconnect_0_sdram_controller_s1_address;                    // mm_interconnect_0:SDRAM_controller_s1_address -> SDRAM_controller:az_addr
+	wire         mm_interconnect_0_sdram_controller_s1_read;                       // mm_interconnect_0:SDRAM_controller_s1_read -> SDRAM_controller:az_rd_n
+	wire   [1:0] mm_interconnect_0_sdram_controller_s1_byteenable;                 // mm_interconnect_0:SDRAM_controller_s1_byteenable -> SDRAM_controller:az_be_n
+	wire         mm_interconnect_0_sdram_controller_s1_readdatavalid;              // SDRAM_controller:za_valid -> mm_interconnect_0:SDRAM_controller_s1_readdatavalid
+	wire         mm_interconnect_0_sdram_controller_s1_write;                      // mm_interconnect_0:SDRAM_controller_s1_write -> SDRAM_controller:az_wr_n
+	wire  [15:0] mm_interconnect_0_sdram_controller_s1_writedata;                  // mm_interconnect_0:SDRAM_controller_s1_writedata -> SDRAM_controller:az_data
+	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_readdata;                   // cpu:debug_mem_slave_readdata -> mm_interconnect_0:cpu_debug_mem_slave_readdata
+	wire         mm_interconnect_0_cpu_debug_mem_slave_waitrequest;                // cpu:debug_mem_slave_waitrequest -> mm_interconnect_0:cpu_debug_mem_slave_waitrequest
+	wire         mm_interconnect_0_cpu_debug_mem_slave_debugaccess;                // mm_interconnect_0:cpu_debug_mem_slave_debugaccess -> cpu:debug_mem_slave_debugaccess
+	wire   [8:0] mm_interconnect_0_cpu_debug_mem_slave_address;                    // mm_interconnect_0:cpu_debug_mem_slave_address -> cpu:debug_mem_slave_address
+	wire         mm_interconnect_0_cpu_debug_mem_slave_read;                       // mm_interconnect_0:cpu_debug_mem_slave_read -> cpu:debug_mem_slave_read
+	wire   [3:0] mm_interconnect_0_cpu_debug_mem_slave_byteenable;                 // mm_interconnect_0:cpu_debug_mem_slave_byteenable -> cpu:debug_mem_slave_byteenable
+	wire         mm_interconnect_0_cpu_debug_mem_slave_write;                      // mm_interconnect_0:cpu_debug_mem_slave_write -> cpu:debug_mem_slave_write
+	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_writedata;                  // mm_interconnect_0:cpu_debug_mem_slave_writedata -> cpu:debug_mem_slave_writedata
 	wire         mm_interconnect_0_dma_lcd_0_avalon_chipselect;                    // mm_interconnect_0:DMA_LCD_0_avalon_chipselect -> DMA_LCD_0:avalon_cs
 	wire  [31:0] mm_interconnect_0_dma_lcd_0_avalon_readdata;                      // DMA_LCD_0:avalon_read_data -> mm_interconnect_0:DMA_LCD_0_avalon_readdata
 	wire         mm_interconnect_0_dma_lcd_0_avalon_waitrequest;                   // DMA_LCD_0:avalon_waitrequest -> mm_interconnect_0:DMA_LCD_0_avalon_waitrequest
@@ -69,28 +86,11 @@ module configuration (
 	wire  [31:0] mm_interconnect_0_gpio_parallel_port_0_avalon_slave_0_writedata;  // mm_interconnect_0:GPIO_parallel_port_0_avalon_slave_0_writedata -> GPIO_parallel_port_0:WriteData
 	wire  [31:0] mm_interconnect_0_sysid_qsys_0_control_slave_readdata;            // sysid_qsys_0:readdata -> mm_interconnect_0:sysid_qsys_0_control_slave_readdata
 	wire   [0:0] mm_interconnect_0_sysid_qsys_0_control_slave_address;             // mm_interconnect_0:sysid_qsys_0_control_slave_address -> sysid_qsys_0:address
-	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_readdata;                   // cpu:debug_mem_slave_readdata -> mm_interconnect_0:cpu_debug_mem_slave_readdata
-	wire         mm_interconnect_0_cpu_debug_mem_slave_waitrequest;                // cpu:debug_mem_slave_waitrequest -> mm_interconnect_0:cpu_debug_mem_slave_waitrequest
-	wire         mm_interconnect_0_cpu_debug_mem_slave_debugaccess;                // mm_interconnect_0:cpu_debug_mem_slave_debugaccess -> cpu:debug_mem_slave_debugaccess
-	wire   [8:0] mm_interconnect_0_cpu_debug_mem_slave_address;                    // mm_interconnect_0:cpu_debug_mem_slave_address -> cpu:debug_mem_slave_address
-	wire         mm_interconnect_0_cpu_debug_mem_slave_read;                       // mm_interconnect_0:cpu_debug_mem_slave_read -> cpu:debug_mem_slave_read
-	wire   [3:0] mm_interconnect_0_cpu_debug_mem_slave_byteenable;                 // mm_interconnect_0:cpu_debug_mem_slave_byteenable -> cpu:debug_mem_slave_byteenable
-	wire         mm_interconnect_0_cpu_debug_mem_slave_write;                      // mm_interconnect_0:cpu_debug_mem_slave_write -> cpu:debug_mem_slave_write
-	wire  [31:0] mm_interconnect_0_cpu_debug_mem_slave_writedata;                  // mm_interconnect_0:cpu_debug_mem_slave_writedata -> cpu:debug_mem_slave_writedata
 	wire  [31:0] mm_interconnect_0_altpll_0_pll_slave_readdata;                    // altpll_0:readdata -> mm_interconnect_0:altpll_0_pll_slave_readdata
 	wire   [1:0] mm_interconnect_0_altpll_0_pll_slave_address;                     // mm_interconnect_0:altpll_0_pll_slave_address -> altpll_0:address
 	wire         mm_interconnect_0_altpll_0_pll_slave_read;                        // mm_interconnect_0:altpll_0_pll_slave_read -> altpll_0:read
 	wire         mm_interconnect_0_altpll_0_pll_slave_write;                       // mm_interconnect_0:altpll_0_pll_slave_write -> altpll_0:write
 	wire  [31:0] mm_interconnect_0_altpll_0_pll_slave_writedata;                   // mm_interconnect_0:altpll_0_pll_slave_writedata -> altpll_0:writedata
-	wire         mm_interconnect_0_sdram_controller_s1_chipselect;                 // mm_interconnect_0:SDRAM_controller_s1_chipselect -> SDRAM_controller:az_cs
-	wire  [15:0] mm_interconnect_0_sdram_controller_s1_readdata;                   // SDRAM_controller:za_data -> mm_interconnect_0:SDRAM_controller_s1_readdata
-	wire         mm_interconnect_0_sdram_controller_s1_waitrequest;                // SDRAM_controller:za_waitrequest -> mm_interconnect_0:SDRAM_controller_s1_waitrequest
-	wire  [22:0] mm_interconnect_0_sdram_controller_s1_address;                    // mm_interconnect_0:SDRAM_controller_s1_address -> SDRAM_controller:az_addr
-	wire         mm_interconnect_0_sdram_controller_s1_read;                       // mm_interconnect_0:SDRAM_controller_s1_read -> SDRAM_controller:az_rd_n
-	wire   [1:0] mm_interconnect_0_sdram_controller_s1_byteenable;                 // mm_interconnect_0:SDRAM_controller_s1_byteenable -> SDRAM_controller:az_be_n
-	wire         mm_interconnect_0_sdram_controller_s1_readdatavalid;              // SDRAM_controller:za_valid -> mm_interconnect_0:SDRAM_controller_s1_readdatavalid
-	wire         mm_interconnect_0_sdram_controller_s1_write;                      // mm_interconnect_0:SDRAM_controller_s1_write -> SDRAM_controller:az_wr_n
-	wire  [15:0] mm_interconnect_0_sdram_controller_s1_writedata;                  // mm_interconnect_0:SDRAM_controller_s1_writedata -> SDRAM_controller:az_data
 	wire         mm_interconnect_0_leds_s1_chipselect;                             // mm_interconnect_0:LEDs_s1_chipselect -> LEDs:chipselect
 	wire  [31:0] mm_interconnect_0_leds_s1_readdata;                               // LEDs:readdata -> mm_interconnect_0:LEDs_s1_readdata
 	wire   [1:0] mm_interconnect_0_leds_s1_address;                                // mm_interconnect_0:LEDs_s1_address -> LEDs:address

@@ -44,7 +44,7 @@
 
 module configuration_mm_interconnect_0_router_002_default_decode
   #(
-     parameter DEFAULT_CHANNEL = 1,
+     parameter DEFAULT_CHANNEL = 0,
                DEFAULT_WR_CHANNEL = -1,
                DEFAULT_RD_CHANNEL = -1,
                DEFAULT_DESTID = 3 
@@ -191,13 +191,13 @@ module configuration_mm_interconnect_0_router_002
 
     // ( 0x1000000 .. 0x2000000 )
     if ( {address[RG:PAD0],{PAD0{1'b0}}} == 26'h1000000   ) begin
-            src_channel = 9'b10;
+            src_channel = 9'b01;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 3;
     end
 
     // ( 0x2000800 .. 0x2001000 )
     if ( {address[RG:PAD1],{PAD1{1'b0}}} == 26'h2000800   ) begin
-            src_channel = 9'b01;
+            src_channel = 9'b10;
             src_data[PKT_DEST_ID_H:PKT_DEST_ID_L] = 5;
     end
 
